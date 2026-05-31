@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Выбери свою игру</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="top-online">
+      <div class="online-item">
+        <span class="online-dot"></span>
+        <strong id="playingNow">2845</strong>
+        <span>сейчас играют</span>
+      </div>
+      <span class="divider"></span>
+      <div class="online-item">
+        <span class="online-green" id="wonLastHour">+123</span>
+        <span>пользователей за час</span>
+      </div>
+    </header>
+
+    <section class="ticker-wrap" aria-label="Последние выигрыши">
+      <div class="ticker" id="ticker"></div>
+
+    <section class="bonus-box">
+      <div class="gift">🎁</div>
+
+      <div class="bonus-text">
+        <small>ПРОМОКОД: FREE2000</small>
+        <strong>200% & 200FS</strong>
+      </div>
+
+      <button class="info-btn" type="button" id="bonusInfoBtn" aria-label="Информация о бонусе" onclick="openBonusToast()">i</button>
+
+      <div class="timer" id="timer">03:00</div>
+    </section>
+
+    <section class="content">
+      
+
+      <div class="games">
+        <article class="game-card">
+          <div class="game-badge purple">VIP</div>
+          <a href="https://52735.call2me.pro/ru/registration?partner=p52735p3328403pa460" target="_blank" rel="noopener" class="game-link">
+            <div class="game-window">
+              <img src="assets/game-3.png" alt="game preview" loading="eager" />
+            </div>
+          </a>
+          <h2 class="game-name">TAPPY BIRD</h2>
+          <a class="play-btn" href="https://52735.call2me.pro/ru/registration?partner=p52735p3328403pa460" target="_blank" rel="noopener">
+            <span class="btn-arrow left">➤</span>
+            <span>ИГРАТЬ</span>
+            <span class="btn-arrow right">➤</span>
+          </a>
+        </article>
+
+        <article class="game-card">
+          <div class="game-badge red">TOP</div>
+          <a href="https://52735.call2me.pro/ru/registration?partner=p52735p3328403pa460" target="_blank" rel="noopener" class="game-link">
+            <div class="game-window">
+              <img src="assets/game-4.png" alt="game preview" loading="eager" />
+            </div>
+          </a>
+          <h2 class="game-name">TOWER RUSH</h2>
+          <a class="play-btn" href="https://52735.call2me.pro/ru/registration?partner=p52735p3328403pa460" target="_blank" rel="noopener">
+            <span class="btn-arrow left">➤</span>
+            <span>ИГРАТЬ</span>
+            <span class="btn-arrow right">➤</span>
+          </a>
+        </article>
+      </div>
+
+      <div class="quick-registration">
+        <div class="quick-registration-title">👇👇 БЫСТРАЯ РЕГИСТРАЦИЯ 👇👇</div>
+        <a class="quick-registration-link" href="https://52735.call2me.pro/ru/registration?partner=p52735p3328403pa460" target="_blank" rel="noopener">
+          <div class="game-window">
+            <img src="assets/game-5.PNG" alt="Быстрая регистрация" loading="lazy" />
+          </div>
+        </a>
+      </div>
+
+      <div class="telegram-section">
+        <div class="telegram-title">👇👇 МОЙ TELEGRAM НИЖЕ 👇👇</div>
+        <a class="telegram-link" href="https://t.me/+l27Mey8raL8zNzRi" target="_blank" rel="noopener">
+          <img src="assets/telegram.png" alt="Telegram" class="telegram-banner" loading="lazy" />
+        </a>
+      </div>
+      
+      
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+
+  <div class="bonus-toast" id="bonusToast">
+    <button class="toast-close" type="button" onclick="closeBonusToast()" aria-label="Закрыть">×</button>
+    <div class="toast-icon">🎁</div>
+    <div class="toast-content">
+      <h2 id="toastTitle">Заберите свой бонус</h2>
+      <p id="toastText">Зарегистрируйтесь сейчас и получите бонус 200% и 200FS, используя этот промокод.</p>
+      <div class="toast-code">
+        <span id="toastCodeLabel">Промокод</span>
+        <div class="code-row">
+          <strong id="promoCode">FREE2000</strong>
+          <button class="copy-btn" onclick="copyPromo()">Копировать</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fake-win-toast" id="fakeWinToast">
+    <div class="fake-win-flag" id="fakeWinFlag">🇺🇸</div>
+    <div class="fake-win-copy">
+      <small id="fakeWinId">ID: 482***</small>
+      <strong id="fakeWinAmount">БОЛЬШОЙ ВЫИГРЫШ +$347</strong>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const flags = ['🇺🇸','🇬🇧','🇮🇳','🇪🇸','🇫🇷','🇮🇹','🇺🇿','🇹🇯','🇦🇪','🇩🇪','🇧🇷','🇲🇽'];
+
+      let audioUnlocked = false;
+      let audioCtx = null;
+
+      function rand(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function unlockAudio() {
+        if (audioUnlocked) return;
+        audioUnlocked = true;
+
+        try {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+
+          // very quiet unlock click
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.frequency.value = 660;
+          gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.025, audioCtx.currentTime + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.12);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.13);
+        } catch (e) {
+          audioCtx = null;
+        }
+      }
+
+      function playJackpotSound() {
+        if (!audioUnlocked || !audioCtx) return;
+
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        const now = audioCtx.currentTime;
+        const gain = audioCtx.createGain();
+        gain.connect(audioCtx.destination);
+
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.12, now + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+
+        const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5];
+
+        notes.forEach(function (freq, index) {
+          const osc = audioCtx.createOscillator();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + index * 0.09);
+          osc.connect(gain);
+          osc.start(now + index * 0.09);
+          osc.stop(now + index * 0.09 + 0.22);
+        });
+      }
+
+      function showJackpot() {
+        const toast = document.getElementById('fakeWinToast');
+        const flag = document.getElementById('fakeWinFlag');
+        const id = document.getElementById('fakeWinId');
+        const amount = document.getElementById('fakeWinAmount');
+
+        if (!toast || !flag || !id || !amount) return;
+
+        const win = rand(3000, 12000);
+
+        flag.textContent = flags[rand(0, flags.length - 1)];
+        id.textContent = 'ID: ' + rand(100, 999) + '***';
+        amount.textContent = 'ДЖЕКПОТ +$' + win.toLocaleString('ru-RU');
+
+        toast.classList.remove('is-visible');
+        void toast.offsetWidth;
+        toast.classList.add('jackpot');
+        toast.classList.add('is-visible');
+
+        playJackpotSound();
+
+        setTimeout(function () {
+          toast.classList.remove('is-visible');
+        }, 4500);
+      }
+
+      function schedule() {
+        setTimeout(function () {
+          showJackpot();
+          schedule();
+        }, rand(20000, 35000));
+      }
+
+      document.addEventListener('click', unlockAudio, { once: true });
+      document.addEventListener('touchstart', unlockAudio, { once: true });
+
+      window.showJackpotNow = showJackpot;
+      window.unlockJackpotSound = unlockAudio;
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+          setTimeout(showJackpot, 3000);
+          schedule();
+        });
+      } else {
+        setTimeout(showJackpot, 3000);
+        schedule();
+      }
+    })();
+  </script>
+
+</body>
+</html>
